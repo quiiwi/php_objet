@@ -30,7 +30,7 @@
 //$resultat = $pdo -> query("quiiwi");
 
 // 3: Connexion en mode erreur Exeption:
-$pdo = new PDO('mysql:host=localhost;dbname=entreprise', 'root', '', array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
+$pdo = new PDO('mysql:host=localhost;dbname=salaries', 'root', '', array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
 
 //$resultat = $pdo -> query("quiiwi");
 
@@ -45,26 +45,74 @@ try{
     $nom = 'Thoyer';
 
     // marqueur ? :
-    $resultat = $pdo -> prepare("SELECT * FROM employes WHERE prenom = ? AND nom = ?");
-    $resultat -> execute(array($prenom,$nom));
+    // $resultat = $pdo -> prepare("SELECT * FROM employes WHERE prenom = ? AND nom = ?");
+    // $resultat -> execute(array($prenom,$nom));
 
 
 
 
 
     // marqueur nominatif ':' :
-    $resultat = $pdo -> prepare("SELECT * FROM employes WHERE prenom = :prenom AND nom = :nom");
-    $resultat -> execute(array(':nom' => $nom, ':prenom' => $prenom));
+    // $resultat = $pdo -> prepare("SELECT * FROM employes WHERE prenom = :prenom AND nom = :nom");
+    // $resultat -> execute(array(':nom' => $nom, ':prenom' => $prenom));
 
 
+    // marqueur nominatiff ':' + bindParam()
+    // $resultat = $pdo -> prepare("SELECT * FROM employes WHERE prenom = ? AND nom = ?");
 
+    // $resultat -> bindParam(':prenom', $prenom, PDO::PARAM_STR);
+    // $resultat -> bindParam(':nom', $nom, PDO::PARAM_STR);
+    // //$resultat -> bindParam(':code_postal', $code_postal, PDO::PARAM_INT);
+    
+    // $resultat -> execute();
+
+    // Fetch vs FetchALL (requete select avec plusieurs résultats)
+
+    // Fetch
+   // $resultat = $pdo -> query("SELECT * FROM inscrit");
+    //$resultat = OBJ PDOStatement
+    //$resultat = INEXPLOITABLE
+    //Combien de  résultat à la requête : PLUSIEURS ===> Boucle
+
+    // while($employes = $resultat -> fetch(PDO::FETCH_ASSOC)){
+
+    //     echo '<pre>';
+    //     print_r($employes);
+    //     echo '</pre>';
+
+
+    //     echo '<ul>';
+    //     foreach($employes as $valeur){
+    //         echo '<li>' . $valeur . '</li>';
+    //     }
+    //     echo '</ul>';
+    // }
+
+    // FetchAll
+    $resultat = $pdo -> query("SELECT * FROM inscrit");
+    //$resultat = OBJ PDOStadement
+    //$resultat = INEXXPLOITABLE en l'état
+    //Un ou plusieurs résultat : plusieurs ==> Boucle ou fetchAll
+    $employes = $resultat ->fetchAll(PDO::FETCH_ASSOC);
+    // echo '<pre>';
+    // print_r($employes);
+    // echo '</pre>';
+
+    foreach($employes as $emp){
+        echo '<h3>' . $emp['pseudo'] . '</h3>';
+        echo '<ul>';
+        foreach($emp as $valeur){
+            echo '<li>' . $valeur . '</li>';
+        }
+        echo '</ul>';
+    }
 
 
 
 
 }
 catch(PDOException $e){
-    echo '<div style="background:red; padding: 10px; color: white">';
+    echo '<div style="background:blue; padding: 10px; color: white">';
     echo 'Erreur SQL : <br>';
     echo 'Erreur : ' . $e -> getMessage() . '<br>';
     echo 'Fichier :' . $e -> getFile() . '<br>';
